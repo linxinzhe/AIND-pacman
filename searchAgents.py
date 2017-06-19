@@ -28,13 +28,15 @@ project description for details.
 
 Good luck and happy searching!
 """
-from game import Directions
-from game import Agent
-from game import Actions
-import util
 import time
+
 import search
 import searchAgents
+import util
+from game import Actions
+from game import Agent
+from game import Directions
+
 
 class GoWestAgent(Agent):
   "An agent that goes West until it can't."
@@ -65,8 +67,8 @@ class SearchAgent(Agent):
   
   Note: You should NOT change any code in SearchAgent
   """
-    
-  def __init__(self, fn='depthFirstSearch', prob='PositionSearchProblem', heuristic='nullHeuristic'):
+
+  def __init__(self, fn='breadthFirstSearch', prob='PositionSearchProblem', heuristic='nullHeuristic'):
     # Warning: some advanced Python magic is employed below to find the right functions and problems
     
     # Get the search function from the name and heuristic
