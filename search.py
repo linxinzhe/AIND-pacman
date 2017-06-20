@@ -69,6 +69,18 @@ def tinyMazeSearch(problem):
     return [s, s, w, s, w, w, s, w]
 
 
+def solution(node):
+    l = list()
+    while True:
+        l.append(node['action'])
+        node = node["parent"]
+        if not node:
+            l.pop()
+            break
+    l.reverse()
+    return l
+
+
 def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first
@@ -86,19 +98,6 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
-
-
-def solution(node):
-    l = list()
-    while True:
-        l.append(node['action'])
-        node = node["parent"]
-        if not node:
-            l.pop()
-            break
-    l.reverse()
-    return l
 
 
 def breadthFirstSearch(problem):
@@ -139,10 +138,62 @@ def breadthFirstSearch(problem):
                 frontier.push(child)
 
 
+def in_heap(item, priorityQueue):
+    for priority, node in priorityQueue.heap:
+        if item['state'] == node['state']:
+            return True
+    return False
+
+
+def is_higher(item, priorityQueue):
+    for priority, node in priorityQueue.heap:
+        if item['state'] == node['state'] and node['path_cost'] > item['path_cost']:
+            return True
+    return False
+
+
+def replace(item, priorityQueue):
+    for priority, node in priorityQueue.heap:
+        if item['state'] == node['state'] and node['path_cost'] > item['path_cost']:
+            node['parent'] = item['parent']
+            node['path_cost'] = item['path_cost']
+    return None
+
+
 def uniformCostSearch(problem):
     "Search the node of least total cost first. "
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    node = {'state': problem.getStartState(),
+            'action': None,
+            'path_cost': 0,
+            'parent': None}
+
+    frontier = util.PriorityQueue()
+    frontier.push(node, node['path_cost'])
+
+    explored = set()
+
+    while True:
+        if frontier.isEmpty():
+            return None
+
+        node = frontier.pop()
+
+        if problem.isGoalState(node['state']):
+            return solution(node)
+
+        state = node['state']
+        explored.add(state)
+
+        for successor, action, stepCost in problem.getSuccessors(state):
+            child = {'state': successor,
+                     'action': action,
+                     'path_cost': node['path_cost'] + stepCost,
+                     'parent': node}
+            if successor not in explored or not in_heap(child, frontier):
+                frontier.push(child, stepCost)
+            elif is_higher(child, frontier):
+                replace(child, frontier)
 
 
 def nullHeuristic(state, problem=None):
