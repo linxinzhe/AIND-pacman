@@ -81,6 +81,33 @@ def solution(node):
     return l
 
 
+CUTOFF = "cutoff"
+
+
+def recursive_dfs(node, problem):
+    if problem.isGoalState(node['state']):
+        return solution(node)
+    # elif limit == 0:
+    #     return CUTOFF
+    else:
+        # cutoff_occurred = False
+        state = node['state']
+        for successor, action, stepCost in problem.getSuccessors(state):
+            child = {'state': successor,
+                     'action': action,
+                     'path_cost': node['path_cost'] + stepCost,
+                     'parent': node}
+            result = recursive_dfs(child, problem)
+            # if result == CUTOFF:
+            #     cutoff_occurred = True
+            if result:
+                return result
+                # if cutoff_occurred:
+                #     return CUTOFF
+                # else:
+                #     return False
+
+
 def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first
@@ -98,6 +125,12 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
+    node = {'state': problem.getStartState(),
+            'action': None,
+            'path_cost': 0,
+            'parent': None}
+
+    return recursive_dfs(node, problem)
 
 
 def breadthFirstSearch(problem):
